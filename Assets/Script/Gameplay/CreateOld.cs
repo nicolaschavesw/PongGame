@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CreateOld : MonoBehaviour
 {
@@ -14,10 +15,10 @@ public class CreateOld : MonoBehaviour
     [SerializeField] private Vector3 startPoint;
     [SerializeField] private Vector3 lastValidPoint;
     private GameObject currentObject;
-    private bool isDragging = false;
     public LayerMask ballLayer;
-
+    private bool isDragging = false;
     private bool isMobile;
+    private bool pause = false;
 
     void Awake()
     {
@@ -66,11 +67,27 @@ public class CreateOld : MonoBehaviour
     }
     private bool IsPointerDown()
     {
-        return Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
+        if (!pause)
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return false;
+            return Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
+        }
+        else
+        {
+            return false;
+        }
     }
     private bool IsPointerUp()
     {
+        if (!pause)
+        {
+        if (EventSystem.current.IsPointerOverGameObject()) return false;
         return Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended);
+        }
+        else
+        {
+            return false;
+        }
     }
     private Vector3 GetPointerWorldPosition()
     {
@@ -118,5 +135,10 @@ public class CreateOld : MonoBehaviour
         Collider[] colliders = Physics.OverlapBox(currentObject.transform.position, size, currentObject.transform.rotation, ballLayer);
 
         return colliders.Length > 0;
+    }
+
+    public void TogglePauseCreatePlatformMechanic()
+    {
+        pause = !pause;
     }
 }

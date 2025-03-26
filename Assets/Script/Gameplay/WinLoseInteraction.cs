@@ -1,9 +1,12 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class WinLoseInteraction : MonoBehaviour
 {
     private BallMechanics ballMechanics;
+    private bool isPaused = false;
+    public float pauseDuration = 0.5f;
     void Start()
     {
         GameObject ballObject = GameObject.FindGameObjectWithTag("Main Ball"); // Encuentra el primer objeto con el tag "Ball"
@@ -43,12 +46,51 @@ public class WinLoseInteraction : MonoBehaviour
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);// Recarga la escena actual
-        ResetTime(); 
+        ResetTime();
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+        ResetTime();
     }
 
     public void ResetTime()
     {
-        Time.timeScale = 1f;  // Restablece la velocidad normal
+        Time.timeScale = 1f;  
         Time.fixedDeltaTime = 0.02f;
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        StopAllCoroutines();
+        StartCoroutine(isPaused ? GradualPause() : GradualResume());
+    }
+
+    private IEnumerator GradualPause()
+    {
+        float elapsedTime = 0f;
+        float startScale = Time.timeScale;
+        while (elapsedTime < pauseDuration)
+        {
+            Time.timeScale = Mathf.Lerp(startScale, 0f, elapsedTime / pauseDuration);
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        Time.timeScale = 0f;
+    }
+
+    private IEnumerator GradualResume()
+    {
+        float elapsedTime = 0f;
+        float startScale = Time.timeScale;
+        while (elapsedTime < pauseDuration)
+        {
+            Time.timeScale = Mathf.Lerp(startScale, 1f, elapsedTime / pauseDuration);
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        Time.timeScale = 1f;
     }
 }
