@@ -7,6 +7,17 @@ public class WinLoseInteraction : MonoBehaviour
     private BallMechanics ballMechanics;
     private bool isPaused = false;
     public float pauseDuration = 0.5f;
+    public GameObject WinUI;
+    public GameObject LoseUI;
+
+    void Awake()
+    {
+        if (WinUI != null)
+            WinUI.SetActive(false);
+        if (LoseUI != null)
+            LoseUI.SetActive(false);
+    }
+
     void Start()
     {
         GameObject ballObject = GameObject.FindGameObjectWithTag("Main Ball"); // Encuentra el primer objeto con el tag "Ball"
@@ -35,11 +46,14 @@ public class WinLoseInteraction : MonoBehaviour
     {
         if (ballMechanics.BallWin())
         {
-            RestartLevel();
+            SaveSystem.Instance.SaveLevelProgress(SceneManager.GetActiveScene().buildIndex);
+            WinUI.SetActive(true);
+            Debug.Log("Ganaste");
         }
         if (ballMechanics.BallLose())
         {
-            RestartLevel();
+            LoseUI.SetActive(true);
+            Debug.Log("Perdiste");
         }
     }
 
@@ -52,6 +66,21 @@ public class WinLoseInteraction : MonoBehaviour
     public void GoToMainMenu()
     {
         SceneManager.LoadScene(0);
+        ResetTime();
+    }
+
+    public void GoToNextLevel()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        if (SaveSystem.Instance.HasPlayedLevel(SceneManager.GetActiveScene().buildIndex))
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.Log("No hay más niveles. Volviendo al menú principal.");
+            GoToMainMenu();
+        }
         ResetTime();
     }
 

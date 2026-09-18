@@ -17,7 +17,7 @@ public class ChangeBounciness : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("velocidad antes de colisionar: " + rbBall.linearVelocity.magnitude);
+        //Debug.Log("velocidad antes de colisionar: " + rbBall.linearVelocity.magnitude);
         if(inputValue > 30.0f)
         {
             inverseLerpValue = 0;
@@ -28,7 +28,7 @@ public class ChangeBounciness : MonoBehaviour
         }
         outputValue = Mathf.Lerp(0.3f, 2.3f, inverseLerpValue);
         rbBall.linearVelocity *= outputValue;
-        Debug.Log("velocidad despues de colisionar: " + rbBall.linearVelocity.magnitude);
+        //Debug.Log("velocidad despues de colisionar: " + rbBall.linearVelocity.magnitude);
     }
 
 }

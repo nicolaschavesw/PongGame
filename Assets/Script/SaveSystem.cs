@@ -4,6 +4,7 @@ using UnityEngine;
 public class SaveSystem : MonoBehaviour
 {
     private static SaveSystem instance;
+    private const int MAX_ENERGY = 30;
     [SerializeField]private string savePath;
     private GameData data;
 
@@ -54,4 +55,6 @@ public class SaveSystem : MonoBehaviour
     {
         get { return instance; }
     }
+
+    
 }

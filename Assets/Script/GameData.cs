@@ -12,4 +12,5 @@ public class LevelProgress
 public class GameData
 {
     public LevelProgress[] levels;
+    public int energy;
 }
